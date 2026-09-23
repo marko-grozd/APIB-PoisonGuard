@@ -1,0 +1,69 @@
+{
+  "id": null,
+  "uid": "poison-guard",
+  "title": "Poison Guard — detekcija data poisoning",
+  "tags": ["security", "ml"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "5s",
+  "time": {"from": "now-15m", "to": "now"},
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Poslednja presuda (1 = blokirano)",
+      "gridPos": {"h": 6, "w": 6, "x": 0, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"thresholds": {"mode": "absolute", "steps": [
+        {"color": "green", "value": null}, {"color": "red", "value": 1}]}}},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "prometheus"},
+        "expr": "pg_last_verdict_blocked", "refId": "A"}]
+    },
+    {
+      "id": 2, "type": "stat", "title": "Kalibraciona tacnost",
+      "gridPos": {"h": 6, "w": 6, "x": 6, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "percentunit", "thresholds": {"mode": "absolute", "steps": [
+        {"color": "red", "value": null}, {"color": "green", "value": 0.9}]}}},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "prometheus"},
+        "expr": "pg_calibration_accuracy", "refId": "A"}]
+    },
+    {
+      "id": 3, "type": "stat", "title": "Blokirano / ukupno batch-eva",
+      "gridPos": {"h": 6, "w": 12, "x": 12, "y": 0},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "targets": [
+        {"datasource": {"type": "prometheus", "uid": "prometheus"}, "expr": "pg_blocked_total", "legendFormat": "blokirano", "refId": "A"},
+        {"datasource": {"type": "prometheus", "uid": "prometheus"}, "expr": "pg_batches_total", "legendFormat": "ukupno", "refId": "B"}
+      ]
+    },
+    {
+      "id": 4, "type": "timeseries", "title": "Mahalanobis outlier rate — prag 0.15",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"thresholds": {"mode": "absolute", "steps": [
+        {"color": "green", "value": null}, {"color": "red", "value": 0.15}]},
+        "custom": {"thresholdsStyle": {"mode": "line"}}}},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "prometheus"},
+        "expr": "pg_mahalanobis_outlier_rate", "refId": "A"}]
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "Kalibraciona tacnost kroz vreme",
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 14},
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "percentunit"}},
+      "targets": [{"datasource": {"type": "prometheus", "uid": "prometheus"},
+        "expr": "pg_calibration_accuracy", "refId": "A"}]
+    },
+    {
+    "id": 6, "type": "timeseries", "title": "Grubbs",
+    "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6},
+    "datasource": {"type": "prometheus", "uid": "prometheus"},
+    "fieldConfig": {"defaults": {"thresholds": {"mode": "absolute", "steps": [
+      {"color": "green", "value": null}, {"color": "red", "value": 8}]},
+      "custom": {"thresholdsStyle": {"mode": "line"}}}},
+    "targets": [{"datasource": {"type": "prometheus", "uid": "prometheus"},
+      "expr": "pg_grubbs_outliers", "refId": "A"}]
+  }
+  ]
+}

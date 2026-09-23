@@ -1,0 +1,9 @@
+apiVersion: 1
+providers:
+  - name: poison-guard
+    type: file
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/json
+      foldersFromFilesStructure: false
